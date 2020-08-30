@@ -218,6 +218,7 @@ func (t *TDigest) CDF(x float64) float64 {
 	}
 
 	if x <= t.min {
+
 		return 0.0
 	}
 	if x >= t.max {
@@ -246,6 +247,9 @@ func (t *TDigest) CDF(x float64) float64 {
 
 	z1 := x - t.processed[upper-1].Mean
 	z2 := t.processed[upper].Mean - x
+	if t.processed[upper-1].Weight == 1.0 {
+		return (t.cumulative[upper-1] + t.processed[upper-1].Weight/2.0) / t.processedWeight
+	}
 	return weightedAverage(t.cumulative[upper-1], z2, t.cumulative[upper], z1) / t.processedWeight
 }
 
