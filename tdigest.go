@@ -9,7 +9,6 @@ import (
 // rank-based statistics such as quantiles and trimmed means.
 type TDigest struct {
 	Compression       float64
-	MinWeight         float64
 	maxProcessed      int
 	maxUnprocessed    int
 	processed         CentroidList
@@ -107,7 +106,7 @@ func (t *TDigest) process() {
 		limit := t.processedWeight * t.integratedQ(1.0)
 		for _, centroid := range t.unprocessed[1:] {
 			projected := soFar + centroid.Weight
-			if projected <= limit && t.processedWeight > t.MinWeight {
+			if projected <= limit && t.processedWeight > float64(t.maxProcessed) {
 				soFar = projected
 				(&t.processed[t.processed.Len()-1]).Add(centroid)
 			} else {
