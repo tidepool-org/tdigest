@@ -81,7 +81,7 @@ func (t *TDigest) AddCentroid(c Centroid) {
 	}
 }
 
-// Merges the supplied digest into this digest. Functionally equivalent to
+// Merge the supplied digest into this digest. Functionally equivalent to
 // calling t.AddCentroidList(t2.Centroids(nil)), but avoids making an extra
 // copy of the CentroidList.
 func (t *TDigest) Merge(t2 *TDigest) {
@@ -99,7 +99,6 @@ func (t *TDigest) process() {
 
 		// Reset processed list with first centroid
 		t.processed.Clear()
-		curWeight := t.processedWeight + t.unprocessedWeight
 		t.processed = append(t.processed, t.unprocessed[0])
 
 		t.processedWeight += t.unprocessedWeight
@@ -108,7 +107,7 @@ func (t *TDigest) process() {
 		limit := t.processedWeight * t.integratedQ(1.0)
 		for _, centroid := range t.unprocessed[1:] {
 			projected := soFar + centroid.Weight
-			if projected <= limit && curWeight > t.MinWeight {
+			if projected <= limit && t.processedWeight > t.MinWeight {
 				soFar = projected
 				(&t.processed[t.processed.Len()-1]).Add(centroid)
 			} else {
