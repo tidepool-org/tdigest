@@ -12,7 +12,7 @@ package main
 import (
 	"log"
 
-	"github.com/influxdata/tdigest"
+	"github.com/tidepool-org/tdigest"
 )
 
 func main() {

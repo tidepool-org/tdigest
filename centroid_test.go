@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/influxdata/tdigest"
+	"github.com/tidepool-org/tdigest"
 )
 
 func TestCentroid_Add(t *testing.T) {
