@@ -8,8 +8,8 @@ import (
 // TDigest is a data structure for accurate on-line accumulation of
 // rank-based statistics such as quantiles and trimmed means.
 type TDigest struct {
-	Compression float64
-
+	Compression       float64
+	MinWeight         float64
 	maxProcessed      int
 	maxUnprocessed    int
 	processed         CentroidList
@@ -99,6 +99,7 @@ func (t *TDigest) process() {
 
 		// Reset processed list with first centroid
 		t.processed.Clear()
+		curWeight := t.processedWeight + t.unprocessedWeight
 		t.processed = append(t.processed, t.unprocessed[0])
 
 		t.processedWeight += t.unprocessedWeight
@@ -107,7 +108,7 @@ func (t *TDigest) process() {
 		limit := t.processedWeight * t.integratedQ(1.0)
 		for _, centroid := range t.unprocessed[1:] {
 			projected := soFar + centroid.Weight
-			if projected <= limit {
+			if projected <= limit && curWeight > t.MinWeight {
 				soFar = projected
 				(&t.processed[t.processed.Len()-1]).Add(centroid)
 			} else {
